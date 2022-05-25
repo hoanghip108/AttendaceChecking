@@ -17,7 +17,7 @@ class LessonFactory extends Factory
     public function definition()
     {
         return [
-            'number_lesson' => $this->faker->numberBetween('100', '200'),
+            'number_lesson' => $this->faker->numberBetween('50', '100'),
             'subject_id' => Subject::query()->inRandomOrder()->value('id'),
             'classs_id' => Classs::query()->inRandomOrder()->value('id'),
             'teacher_id' => Teacher::query()->inRandomOrder()->value('id'),
