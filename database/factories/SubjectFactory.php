@@ -15,7 +15,7 @@ class SubjectFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->name(),
+            'name' => $this->faker->unique()->name(),
             'major_id' => Major::query()->inRandomOrder()->value('id'),
         ];
     }
