@@ -20,6 +20,7 @@ class CreateSlotsTable extends Migration
             $table->foreignId('teacher_id')->constrained();
             $table->foreignId('subject_id')->constrained();
             $table->foreignId('classs_id')->constrained();
+            $table->unique(['slot', 'date', 'subject_id', 'classs_id']);
         });
     }
 

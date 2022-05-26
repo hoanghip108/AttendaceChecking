@@ -19,7 +19,7 @@ class SlotFactory extends Factory
     {
         return [
             'slot' => SlotSlotEnum::getRandomValue(),
-            'date' => $this->faker->unique()->date(),
+            'date' => $this->faker->date(),
             'teacher_id' => Teacher::query()->inRandomOrder()->value('id'),
             'classs_id' => Classs::query()->inRandomOrder()->value('id'),
             'subject_id' => Subject::query()->inRandomOrder()->value('id'),
