@@ -16,7 +16,7 @@ class ClasssFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->name(),
+            'name' => $this->faker->unique()->name(),
             'course_id' => Course::query()->inRandomOrder()->value('id'),
             'major_id' => Major::query()->inRandomOrder()->value('id'),
         ];
