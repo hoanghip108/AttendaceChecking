@@ -2,85 +2,85 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Major;
 use App\Http\Requests\StoreMajorRequest;
 use App\Http\Requests\UpdateMajorRequest;
+use App\Models\Major;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\View;
+use Yajra\DataTables\DataTables;
 
 class MajorController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    private $model;
+    public function __construct()
+    {
+        $this->model = new Major();
+        $routeName = Route::currentRouteName();
+        $arr = explode('.', $routeName);
+        $arr = array_map('ucfirst', $arr);
+        $title = implode(' - ', $arr);
+
+        View::share('title', $title);
+    }
+
     public function index()
     {
-        //
+        return view('major.index');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function api()
+    {
+        return Datatables::of($this->model::query())
+            ->addColumn('edit', function($object){
+                return route('majors.edit', $object);
+            })
+            ->addColumn('destroy', function($object){
+                return route('majors.destroy', $object);
+            })
+            ->rawColumns(['edit'])
+            ->make(true);
+    }
+
     public function create()
     {
-        //
+        return view('major.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StoreMajorRequest  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(StoreMajorRequest $request)
     {
+        $this->model::create($request->validated());
+
+        return redirect()->route('majors.index')->with('success', 'Created successfully');
+    }
+
+    public function show(Major $major)    {
         //
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Major  $major
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Major $major)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Major  $major
-     * @return \Illuminate\Http\Response
-     */
     public function edit(Major $major)
     {
-        //
+        return view('major.edit', [
+            'each' => $major,
+        ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateMajorRequest  $request
-     * @param  \App\Models\Major  $major
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdateMajorRequest $request, Major $major)
+    public function update(UpdateMajorRequest $request, $majorId)
     {
-        //
+        $object = $this->model->find($majorId);
+        $object->fill($request->except('_token'));
+        $object->save();
+
+        return redirect()->route('majors.index')->with('success', 'Updated successfully');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Major  $major
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(Major $major)
     {
-        //
+        $major->delete();
+
+        $arr = [];
+        $arr['status'] = true;
+        $arr['message'] = '';
+
+        return response($arr, 200);
     }
 }
