@@ -2,85 +2,100 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Major;
 use App\Models\Teacher;
 use App\Http\Requests\StoreTeacherRequest;
 use App\Http\Requests\UpdateTeacherRequest;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\View;
+use Yajra\DataTables\DataTables;
 
 class TeacherController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    private $model;
+    public function __construct()
+    {
+        $this->model = new Teacher();
+        $routeName = Route::currentRouteName();
+        $arr = explode('.', $routeName);
+        $arr = array_map('ucfirst', $arr);
+        $title = implode(' - ', $arr);
+
+        View::share('title', $title);
+    }
+
     public function index()
     {
-        //
+        return view('teacher.index');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function api()
+    {
+        return Datatables::of($this->model::query()->with('major'))
+            ->editColumn('gender', function($object){
+                return $object->gender_name;
+            })
+            ->addColumn('major_name', function($object){
+                return $object->major->name;
+            })
+            ->addColumn('edit', function($object){
+                return route('teachers.edit', $object);
+            })
+            ->addColumn('destroy', function($object){
+                return route('teachers.destroy', $object);
+            })
+            ->rawColumns(['edit'])
+            ->make(true);
+    }
+
     public function create()
     {
-        //
+        $majors = Major::get();
+
+        return view('teacher.create', [
+            'majors' => $majors,
+        ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StoreTeacherRequest  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(StoreTeacherRequest $request)
     {
-        //
+        $this->model::create($request->validated());
+
+        return redirect()->route('teachers.index')->with('success', 'Created successfully');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Teacher  $teacher
-     * @return \Illuminate\Http\Response
-     */
     public function show(Teacher $teacher)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Teacher  $teacher
-     * @return \Illuminate\Http\Response
-     */
     public function edit(Teacher $teacher)
     {
-        //
+        $majors = Major::get();
+
+        return view('teacher.edit', [
+            'each' => $teacher,
+            'majors' => $majors,
+        ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateTeacherRequest  $request
-     * @param  \App\Models\Teacher  $teacher
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdateTeacherRequest $request, Teacher $teacher)
+    public function update(UpdateTeacherRequest $request, $teacherId)
     {
-        //
+        $object = $this->model->find($teacherId);
+        $object->fill($request->except('_token'));
+        $object->save();
+
+        return redirect()->route('teachers.index')->with('success', 'Updated successfully');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Teacher  $teacher
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(Teacher $teacher)
     {
-        //
+        $teacher->delete();
+
+        $arr = [];
+        $arr['status'] = true;
+        $arr['message'] = '';
+
+        return response($arr, 200);
     }
 }
