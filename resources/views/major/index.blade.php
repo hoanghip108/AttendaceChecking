@@ -35,9 +35,6 @@
                 }
             };
             let table = $('#table-index').DataTable({
-                scrollY: '50vh',
-                scrollCollapse: true,
-                paging: true,
                 dom:'Blfrtip',
                 buttons: [
                     $.extend( true, {}, buttonCommon, {
@@ -110,7 +107,7 @@
                         console.log("error");
                         swal({
                             title: "Delete failed",
-                            icon: "warning"
+                            icon: "error"
                         })
                     }
                 });
