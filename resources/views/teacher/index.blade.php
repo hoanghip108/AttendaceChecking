@@ -41,6 +41,9 @@
                 }
             };
             let table = $('#table-index').DataTable({
+                scrollY: '50vh',
+                scrollCollapse: true,
+                paging: true,
                 dom:'Blfrtip',
                 buttons: [
                     $.extend( true, {}, buttonCommon, {
@@ -101,7 +104,6 @@
                 ]
             });
             $(document).on('click', '.btn-delete', function (){
-                let row = $(this).parents('tr');
                 let form = $(this).parents('form');
                 $.ajax({
                     url: form.attr('action'),
@@ -120,7 +122,7 @@
                         console.log("error");
                         swal({
                             title: "Delete failed",
-                            icon: "warning"
+                            icon: "error"
                         })
                     }
                 });
