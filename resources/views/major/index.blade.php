@@ -89,7 +89,6 @@
                 ]
             });
             $(document).on('click', '.btn-delete', function (){
-                let row = $(this).parents('tr');
                 let form = $(this).parents('form');
                 $.ajax({
                     url: form.attr('action'),
