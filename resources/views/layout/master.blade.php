@@ -4,6 +4,7 @@
 <head>
     <meta charset="utf-8"/>
     <title>
+        J2Project
         @if(isset($title))
             | {{ $title }}
         @endif
