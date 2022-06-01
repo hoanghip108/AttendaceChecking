@@ -99,7 +99,7 @@
                         console.log("success");
                         swal({
                             title: "Deleted successfully",
-                            icon: "success",
+                            icon: "success"
                         })
                         table.draw();
                     },
@@ -107,7 +107,7 @@
                         console.log("error");
                         swal({
                             title: "Delete failed",
-                            icon: "warning",
+                            icon: "warning"
                         })
                     }
                 });
