@@ -99,37 +99,17 @@
                     success: function() {
                         console.log("success");
                         swal({
-                            title: "Are you sure?",
-                            icon: "warning",
-                            buttons: true,
-                            dangerMode: true,
+                            title: "Deleted successfully",
+                            icon: "success"
                         })
-                            .then((willDelete) => {
-                                if (willDelete) {
-                                    swal({
-                                        title: "Deleted Successfully",
-                                        icon: "success",
-                                    });
-                                }
-                            });
                         table.draw();
                     },
                     error: function() {
                         console.log("error");
                         swal({
-                            title: "Are you sure?",
-                            icon: "warning",
-                            buttons: true,
-                            dangerMode: true,
+                            title: "Delete failed",
+                            icon: "warning"
                         })
-                            .then((willDelete) => {
-                                if (willDelete) {
-                                    swal({
-                                        title: "Delete Failed",
-                                        icon: "error",
-                                    });
-                                }
-                            });
                     }
                 });
             });
